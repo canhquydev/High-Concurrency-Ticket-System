@@ -2,10 +2,7 @@ package com.quy.highconcurrency_ticket_system.model;
 
 import com.quy.highconcurrency_ticket_system.enums.EventStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Events")
 public class Event {
@@ -27,6 +25,8 @@ public class Event {
     private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private EventStatus status;
+    private boolean deleted = false;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EventSession> eventSessionsList;
+
 }

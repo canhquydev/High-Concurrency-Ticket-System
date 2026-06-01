@@ -2,10 +2,7 @@ package com.quy.highconcurrency_ticket_system.model;
 
 import com.quy.highconcurrency_ticket_system.enums.SessionStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Event_sessions")
 public class EventSession {

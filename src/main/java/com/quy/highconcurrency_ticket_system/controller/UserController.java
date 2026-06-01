@@ -1,6 +1,8 @@
 package com.quy.highconcurrency_ticket_system.controller;
 
 import com.quy.highconcurrency_ticket_system.dto.request.UserRequest;
+import com.quy.highconcurrency_ticket_system.dto.request.UserUpdateRq;
+import com.quy.highconcurrency_ticket_system.dto.response.APIResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.service.UserService;
 import jakarta.validation.Valid;
@@ -20,28 +22,37 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> index(){
-        return new ResponseEntity<>(userService.index(), HttpStatus.OK);
+    public ResponseEntity<APIResponse<List<UserResponse>>> index(){
+        APIResponse<List<UserResponse>> response = new APIResponse<>(HttpStatus.OK.value(), "Users retrieved successfully"
+                , userService.index(), null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(@PathVariable Long id){
-        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+    public ResponseEntity<APIResponse<UserResponse>> findById(@PathVariable Long id){
+        APIResponse<UserResponse> response = new APIResponse<>(HttpStatus.OK.value(), "User retrieved successfully"
+                , userService.findById(id), null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest request){
-        return new ResponseEntity<>(userService.create(request), HttpStatus.CREATED);
+    public ResponseEntity<APIResponse<UserResponse>> create(@Valid @RequestBody UserRequest request){
+        APIResponse<UserResponse> response = new APIResponse<>(HttpStatus.CREATED.value(), "User created successfully"
+                , userService.create(request), null);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody UserRequest request){
-        return new ResponseEntity<>(userService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<APIResponse<UserResponse>> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRq request){
+        APIResponse<UserResponse> response = new APIResponse<>(HttpStatus.OK.value(), "User update successfully"
+                , userService.update(id, request), null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id){
+    public ResponseEntity<APIResponse<Object>> delete(@PathVariable Long id){
         userService.delete(id);
-        return ResponseEntity.noContent().build();
+        APIResponse<Object> response = new APIResponse<>(HttpStatus.NO_CONTENT.value(), "User deleted successfully", null, null);
+        return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
     }
 }

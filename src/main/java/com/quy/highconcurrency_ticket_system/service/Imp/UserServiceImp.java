@@ -1,5 +1,6 @@
 package com.quy.highconcurrency_ticket_system.service.Imp;
 
+import com.quy.highconcurrency_ticket_system.dto.request.UserUpdateRq;
 import com.quy.highconcurrency_ticket_system.enums.Role;
 import com.quy.highconcurrency_ticket_system.exception.DuplicateResourceException;
 import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException;
@@ -29,7 +30,7 @@ public class UserServiceImp implements UserService {
         }
         User user = User.builder()
                 .email(request.getEmail())
-                .role(Role.valueOf(request.getRole()))
+                .role(Role.valueOf(request.getRole().toUpperCase()))
                 .password(request.getPassword())
                 .build();
         userRepository.save(user);
@@ -55,15 +56,27 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserResponse update(Long id, UserRequest request) {
+    public UserResponse update(Long id, UserUpdateRq request) {
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()){
             throw new ResourceNotFoundException("User", "id", id);
         }
         User userUpdate = user.get();
-        userUpdate.setEmail(request.getEmail());
-        userUpdate.setPassword(request.getPassword());
-        userUpdate.setRole(Role.valueOf(request.getRole()));
+        if(!request.getEmail().equals(userUpdate.getEmail())){
+            if(userRepository.existsByEmail(request.getEmail())){
+                throw new DuplicateResourceException("Email", request.getEmail());
+            }
+        }
+        if(request.getEmail() != null){
+            userUpdate.setEmail(request.getEmail());
+        }
+        if(request.getPassword() != null){
+            userUpdate.setPassword(request.getPassword());
+        }
+        if(request.getRole() != null){
+            userUpdate.setRole(Role.valueOf(request.getRole().toUpperCase()));
+        }
+
         userRepository.save(userUpdate);
         return new UserResponse(userUpdate);
     }
