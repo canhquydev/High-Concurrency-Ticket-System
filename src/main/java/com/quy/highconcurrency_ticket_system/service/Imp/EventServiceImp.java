@@ -3,11 +3,17 @@ package com.quy.highconcurrency_ticket_system.service.Imp;
 import com.quy.highconcurrency_ticket_system.dto.request.EventRequest;
 import com.quy.highconcurrency_ticket_system.dto.request.EventUpdateRq;
 import com.quy.highconcurrency_ticket_system.dto.response.EventResponse;
+import com.quy.highconcurrency_ticket_system.dto.response.EventSessionResponse;
+import com.quy.highconcurrency_ticket_system.dto.response.TicketResponse;
 import com.quy.highconcurrency_ticket_system.enums.EventStatus;
 import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException;
 import com.quy.highconcurrency_ticket_system.model.Event;
+import com.quy.highconcurrency_ticket_system.model.Ticket;
 import com.quy.highconcurrency_ticket_system.repository.EventRepository;
+import com.quy.highconcurrency_ticket_system.repository.EventSessionRepository;
+import com.quy.highconcurrency_ticket_system.repository.TicketRepository;
 import com.quy.highconcurrency_ticket_system.service.EventService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +23,13 @@ import java.util.Optional;
 public class EventServiceImp implements EventService {
 
     private final EventRepository eventRepository;
+    private final EventSessionRepository eventSessionRepository;
+    private final TicketRepository ticketRepository;
 
-    public EventServiceImp(EventRepository eventRepository) {
+    public EventServiceImp(EventRepository eventRepository, EventSessionRepository eventSessionRepository, TicketRepository ticketRepository) {
         this.eventRepository = eventRepository;
+        this.eventSessionRepository = eventSessionRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
@@ -44,10 +54,11 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
-    public EventResponse findById(Long id) {
-        Optional<Event> event = eventRepository.findById(id);
+    @Transactional()
+    public EventResponse findById(Long eventId) {
+        Optional<Event> event = eventRepository.findByIdWithDetails(eventId);
         if(event.isEmpty()){
-            throw new ResourceNotFoundException("Event", "Id", id);
+            throw new ResourceNotFoundException("Event", "Id", eventId);
         }
         return new EventResponse(event.get());
     }

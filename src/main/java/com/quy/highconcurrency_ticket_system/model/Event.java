@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,6 +29,6 @@ public class Event {
     private EventStatus status;
     private boolean deleted = false;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<EventSession> eventSessionsList;
+    private Set<EventSession> eventSessionsList;
 
 }

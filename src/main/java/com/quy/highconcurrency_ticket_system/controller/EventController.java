@@ -27,12 +27,13 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<EventResponse>> findById(@PathVariable Long id){
+    @GetMapping("/{eventId}")
+    public ResponseEntity<APIResponse<EventResponse>> findById(@PathVariable Long eventId){
         APIResponse<EventResponse> response = new APIResponse<>(HttpStatus.OK.value(), "Event retrieved successfully"
-                , eventService.findById(id), null);
+                , eventService.findById(eventId), null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     @PostMapping
     public ResponseEntity<APIResponse<EventResponse>> create(@Valid @RequestBody EventRequest request){

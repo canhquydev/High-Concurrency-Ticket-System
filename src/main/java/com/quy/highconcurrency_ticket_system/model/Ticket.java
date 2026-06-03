@@ -2,10 +2,7 @@ package com.quy.highconcurrency_ticket_system.model;
 
 import com.quy.highconcurrency_ticket_system.enums.TicketType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -13,6 +10,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Tickets")
 public class Ticket {
@@ -28,4 +26,5 @@ public class Ticket {
     private BigDecimal price;
     private Integer totalStock;
     private Integer availableStock;
+    private boolean deleted = false;
 }
