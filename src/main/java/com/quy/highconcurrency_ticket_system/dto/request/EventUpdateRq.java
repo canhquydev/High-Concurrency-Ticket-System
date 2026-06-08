@@ -13,6 +13,7 @@ import lombok.Setter;
 public class EventUpdateRq {
     private String name;
     private String description;
+    private String location;
     @EnumValid(enumClass = EventStatus.class, message = "Event is not valid")
     private String status;
 }

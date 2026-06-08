@@ -30,8 +30,10 @@ public class EventSessionResponse {
         this.endTime = eventSession.getEndTime();
         this.status = eventSession.getStatus();
         List<TicketResponse> ticketResponses = new ArrayList<>();
-        for (Ticket ticket: eventSession.getTicketList()){
-            ticketResponses.add(new TicketResponse(ticket));
+        if(eventSession.getTicketList() != null){
+            for (Ticket ticket: eventSession.getTicketList()){
+                ticketResponses.add(new TicketResponse(ticket));
+            }
         }
         this.ticketList = ticketResponses;
     }

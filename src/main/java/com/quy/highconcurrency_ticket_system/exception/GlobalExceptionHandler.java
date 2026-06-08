@@ -16,9 +16,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex){
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->{
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
+        ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         APIResponse<Map<String, String>> response = new APIResponse<>(HttpStatus.BAD_REQUEST.value(), "Validation failed", null, errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -39,6 +37,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> IllegalArgumentExceptionHandler(IllegalArgumentException ex){
+        APIResponse<Object> response = new APIResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null, null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InsufficientTicketsException.class)
+    public ResponseEntity<Object> InsufficientTicketsExceptionHandler(InsufficientTicketsException ex){
         APIResponse<Object> response = new APIResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null, null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }

@@ -1,10 +1,7 @@
 package com.quy.highconcurrency_ticket_system.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -12,6 +9,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "Order_items")
 public class OrderItem {
@@ -25,6 +23,6 @@ public class OrderItem {
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
     private Integer quantity;
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 18, scale = 2)
     private BigDecimal price;
 }

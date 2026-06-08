@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateRq {
+    private String fullName;
     @Email
     private String email;
     private String password;

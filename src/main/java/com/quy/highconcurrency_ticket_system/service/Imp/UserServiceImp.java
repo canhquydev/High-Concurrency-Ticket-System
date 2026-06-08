@@ -29,6 +29,7 @@ public class UserServiceImp implements UserService {
             throw new DuplicateResourceException("Email", request.getEmail());
         }
         User user = User.builder()
+                .fullName(request.getFullName())
                 .email(request.getEmail())
                 .role(Role.valueOf(request.getRole().toUpperCase()))
                 .password(request.getPassword())
@@ -66,6 +67,9 @@ public class UserServiceImp implements UserService {
             if(userRepository.existsByEmail(request.getEmail())){
                 throw new DuplicateResourceException("Email", request.getEmail());
             }
+        }
+        if(request.getFullName() != null){
+            userUpdate.setFullName(request.getFullName());
         }
         if(request.getEmail() != null){
             userUpdate.setEmail(request.getEmail());

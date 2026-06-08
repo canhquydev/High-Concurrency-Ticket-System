@@ -15,6 +15,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserRequest {
+    @NotBlank
+    private String fullName;
     @Email
     @NotBlank
     private String email;

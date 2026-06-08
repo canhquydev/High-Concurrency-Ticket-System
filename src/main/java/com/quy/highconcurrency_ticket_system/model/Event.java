@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -22,6 +20,7 @@ public class Event {
     private Long id;
     private String name;
     private String description;
+    private String location;
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

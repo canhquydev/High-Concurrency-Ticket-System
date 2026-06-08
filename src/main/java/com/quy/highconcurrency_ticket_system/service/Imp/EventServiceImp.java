@@ -3,15 +3,10 @@ package com.quy.highconcurrency_ticket_system.service.Imp;
 import com.quy.highconcurrency_ticket_system.dto.request.EventRequest;
 import com.quy.highconcurrency_ticket_system.dto.request.EventUpdateRq;
 import com.quy.highconcurrency_ticket_system.dto.response.EventResponse;
-import com.quy.highconcurrency_ticket_system.dto.response.EventSessionResponse;
-import com.quy.highconcurrency_ticket_system.dto.response.TicketResponse;
 import com.quy.highconcurrency_ticket_system.enums.EventStatus;
 import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException;
 import com.quy.highconcurrency_ticket_system.model.Event;
-import com.quy.highconcurrency_ticket_system.model.Ticket;
 import com.quy.highconcurrency_ticket_system.repository.EventRepository;
-import com.quy.highconcurrency_ticket_system.repository.EventSessionRepository;
-import com.quy.highconcurrency_ticket_system.repository.TicketRepository;
 import com.quy.highconcurrency_ticket_system.service.EventService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -23,19 +18,16 @@ import java.util.Optional;
 public class EventServiceImp implements EventService {
 
     private final EventRepository eventRepository;
-    private final EventSessionRepository eventSessionRepository;
-    private final TicketRepository ticketRepository;
 
-    public EventServiceImp(EventRepository eventRepository, EventSessionRepository eventSessionRepository, TicketRepository ticketRepository) {
+    public EventServiceImp(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
-        this.eventSessionRepository = eventSessionRepository;
-        this.ticketRepository = ticketRepository;
     }
 
     @Override
     public EventResponse create(EventRequest request) {
         Event event = Event.builder()
                 .name(request.getName())
+                .location(request.getLocation())
                 .description(request.getDescription())
                 .status(EventStatus.valueOf(request.getStatus().toUpperCase()))
                 .build();
@@ -75,6 +67,9 @@ public class EventServiceImp implements EventService {
         }
         if(request.getDescription() != null){
             eventUpdate.setDescription(request.getDescription());
+        }
+        if(request.getLocation() != null){
+            eventUpdate.setDescription(request.getLocation());
         }
         if(request.getStatus() != null){
             eventUpdate.setStatus(EventStatus.valueOf(request.getStatus().toUpperCase()));

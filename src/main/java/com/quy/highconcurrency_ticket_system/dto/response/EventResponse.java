@@ -20,6 +20,7 @@ public class EventResponse {
     private Long id;
     private String name;
     private String description;
+    private String location;
     private LocalDateTime createdAt;
     private EventStatus status;
     private boolean deleted;
@@ -28,12 +29,15 @@ public class EventResponse {
         this.id = event.getId();
         this.name = event.getName();
         this.description = event.getDescription();
+        this.location = event.getLocation();
         this.createdAt = event.getCreatedAt();
         this.status = event.getStatus();
         this.deleted = event.isDeleted();
         List<EventSessionResponse> eventSessionResponses = new ArrayList<>();
-        for(EventSession e: event.getEventSessionsList()){
-            eventSessionResponses.add(new EventSessionResponse(e));
+        if(event.getEventSessionsList() != null){
+            for (EventSession e : event.getEventSessionsList()) {
+                eventSessionResponses.add(new EventSessionResponse(e));
+            }
         }
         this.eventSessions = eventSessionResponses;
     }

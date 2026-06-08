@@ -17,6 +17,8 @@ public class EventRequest {
     private String name;
     private String description;
     @NotBlank
+    private String location;
+    @NotBlank
     @EnumValid(enumClass = EventStatus.class, message = "Event is not valid")
     private String status;
 }

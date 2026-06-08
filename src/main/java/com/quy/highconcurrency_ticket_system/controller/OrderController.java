@@ -2,6 +2,7 @@ package com.quy.highconcurrency_ticket_system.controller;
 
 import com.quy.highconcurrency_ticket_system.dto.request.OrderRequest;
 import com.quy.highconcurrency_ticket_system.dto.response.APIResponse;
+import com.quy.highconcurrency_ticket_system.dto.response.OrderItemResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.OrderResponse;
 import com.quy.highconcurrency_ticket_system.service.OrderService;
 import jakarta.validation.Valid;
@@ -33,10 +34,17 @@ public class OrderController {
                 , orderService.findById(id), null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @GetMapping("/details/{id}")
+    public ResponseEntity<APIResponse<OrderItemResponse>> find(@PathVariable Long id){
+        APIResponse<OrderItemResponse> response = new APIResponse<>(HttpStatus.OK.value(), "Order retrieved successfully"
+                , orderService.orderDetails(id), null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
     @PostMapping
-    public ResponseEntity<APIResponse<OrderResponse>> create(@Valid @RequestBody OrderRequest request){
-        APIResponse<OrderResponse> response = new APIResponse<>(HttpStatus.CREATED.value(), "Order created successfully"
+    public ResponseEntity<APIResponse<OrderItemResponse>> create(@Valid @RequestBody OrderRequest request){
+        APIResponse<OrderItemResponse> response = new APIResponse<>(HttpStatus.CREATED.value(), "Order created successfully"
                 , orderService.create(request), null);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
