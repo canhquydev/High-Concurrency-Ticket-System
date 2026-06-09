@@ -1,8 +1,11 @@
 package com.quy.highconcurrency_ticket_system.controller;
 
+import com.nimbusds.jose.JOSEException;
+import com.quy.highconcurrency_ticket_system.dto.request.IntrospectTokenRq;
 import com.quy.highconcurrency_ticket_system.dto.request.LoginRequest;
 import com.quy.highconcurrency_ticket_system.dto.request.RegisterRequest;
 import com.quy.highconcurrency_ticket_system.dto.response.APIResponse;
+import com.quy.highconcurrency_ticket_system.dto.response.IntrospectTokenRp;
 import com.quy.highconcurrency_ticket_system.dto.response.LoginResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.service.AuthService;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -32,6 +37,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<APIResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request){
         APIResponse<LoginResponse> response = new APIResponse<>(200, "Login successfully", service.login(request), null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<APIResponse<IntrospectTokenRp>> verify(@RequestBody IntrospectTokenRq request) throws ParseException, JOSEException {
+        APIResponse<IntrospectTokenRp> response = new APIResponse<>(200, "Verify successfully", service.verify(request), null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

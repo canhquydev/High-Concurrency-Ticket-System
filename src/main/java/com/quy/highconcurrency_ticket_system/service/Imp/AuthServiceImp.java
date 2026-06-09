@@ -1,7 +1,14 @@
 package com.quy.highconcurrency_ticket_system.service.Imp;
 
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import com.quy.highconcurrency_ticket_system.dto.request.IntrospectTokenRq;
 import com.quy.highconcurrency_ticket_system.dto.request.LoginRequest;
 import com.quy.highconcurrency_ticket_system.dto.request.RegisterRequest;
+import com.quy.highconcurrency_ticket_system.dto.response.IntrospectTokenRp;
 import com.quy.highconcurrency_ticket_system.dto.response.LoginResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.enums.Role;
@@ -10,12 +17,22 @@ import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException
 import com.quy.highconcurrency_ticket_system.model.User;
 import com.quy.highconcurrency_ticket_system.repository.UserRepository;
 import com.quy.highconcurrency_ticket_system.service.AuthService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 @Service
 public class AuthServiceImp implements AuthService {
+
+    @Value("${jwt.secretKey}")
+    private String secretKey;
 
     private final UserRepository userRepository;
 
@@ -46,10 +63,48 @@ public class AuthServiceImp implements AuthService {
                 new ResourceNotFoundException("User", "Email", request.getEmail()));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
-            throw new ResourceNotFoundException("Login", "message", "Login failed");
+            throw new BadCredentialsException("Login failed: Invalid username or password.");
         }
+        String token = generateToken(request.getEmail());
         return LoginResponse.builder()
+                .email(request.getEmail())
+                .token(token)
                 .authenticated(true)
                 .build();
+    }
+
+    @Override
+    public IntrospectTokenRp verify(IntrospectTokenRq request) throws ParseException, JOSEException {
+
+        JWSVerifier jwsVerifier = new MACVerifier(secretKey.getBytes());
+
+        SignedJWT signedJWT = SignedJWT.parse(request.getToken());
+
+        Date expired = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        boolean verify = signedJWT.verify(jwsVerifier);
+
+        return IntrospectTokenRp.builder()
+                .valid(verify && expired.after(new Date())).build();
+    }
+
+    private String generateToken(String email) {
+        JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
+        new Date().toInstant();
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                .subject(email)
+                .issuer("Quys")
+                .issueTime(new Date())
+                .expirationTime(Date.from(Instant.now().plus(30, ChronoUnit.MINUTES)))
+                .claim("Custom", "Claim")
+                .build();
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
+        JWSObject jwsObject = new JWSObject(jwsHeader, payload);
+        try {
+            jwsObject.sign(new MACSigner(secretKey.getBytes()));
+            return jwsObject.serialize();
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

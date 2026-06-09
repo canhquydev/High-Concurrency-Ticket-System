@@ -3,6 +3,7 @@ package com.quy.highconcurrency_ticket_system.exception;
 import com.quy.highconcurrency_ticket_system.dto.response.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -45,5 +46,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> InsufficientTicketsExceptionHandler(InsufficientTicketsException ex){
         APIResponse<Object> response = new APIResponse<>(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null, null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> BadCredentialsExceptionHandler(BadCredentialsException ex){
+        APIResponse<Object> response = new APIResponse<>(HttpStatus.FORBIDDEN.value(), ex.getMessage(), null, null);
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 }
