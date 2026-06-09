@@ -10,7 +10,6 @@ import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException
 import com.quy.highconcurrency_ticket_system.model.User;
 import com.quy.highconcurrency_ticket_system.repository.UserRepository;
 import com.quy.highconcurrency_ticket_system.service.AuthService;
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

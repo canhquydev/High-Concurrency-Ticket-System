@@ -7,7 +7,6 @@ import com.quy.highconcurrency_ticket_system.dto.response.LoginResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.service.AuthService;
 import jakarta.validation.Valid;
-import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

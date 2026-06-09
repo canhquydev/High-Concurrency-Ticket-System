@@ -4,13 +4,10 @@ import com.quy.highconcurrency_ticket_system.dto.request.UserUpdateRq;
 import com.quy.highconcurrency_ticket_system.enums.Role;
 import com.quy.highconcurrency_ticket_system.exception.DuplicateResourceException;
 import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException;
-import com.quy.highconcurrency_ticket_system.dto.request.UserRequest;
 import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.model.User;
 import com.quy.highconcurrency_ticket_system.repository.UserRepository;
 import com.quy.highconcurrency_ticket_system.service.UserService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

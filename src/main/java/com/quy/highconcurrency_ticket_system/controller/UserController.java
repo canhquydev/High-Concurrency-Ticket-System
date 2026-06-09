@@ -1,6 +1,5 @@
 package com.quy.highconcurrency_ticket_system.controller;
 
-import com.quy.highconcurrency_ticket_system.dto.request.UserRequest;
 import com.quy.highconcurrency_ticket_system.dto.request.UserUpdateRq;
 import com.quy.highconcurrency_ticket_system.dto.response.APIResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
