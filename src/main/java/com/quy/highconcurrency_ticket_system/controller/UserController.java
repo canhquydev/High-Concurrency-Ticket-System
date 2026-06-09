@@ -35,13 +35,6 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<APIResponse<UserResponse>> create(@Valid @RequestBody UserRequest request){
-        APIResponse<UserResponse> response = new APIResponse<>(HttpStatus.CREATED.value(), "User created successfully"
-                , userService.create(request), null);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<UserResponse>> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRq request){
         APIResponse<UserResponse> response = new APIResponse<>(HttpStatus.OK.value(), "User update successfully"

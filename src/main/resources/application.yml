@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: High-Concurrency Ticket System
+  profiles:
+    active:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=ticketdb;trustServerCertificate=true
+    username: sa
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

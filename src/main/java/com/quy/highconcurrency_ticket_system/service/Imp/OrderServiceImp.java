@@ -35,8 +35,10 @@ public class OrderServiceImp implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public OrderItemResponse create(OrderRequest request){
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User", "User Id", request.getUserId()));
-        Ticket ticket = ticketRepository.findById(request.getTicketId()).orElseThrow(() -> new ResourceNotFoundException("Ticket", "Ticket Id", request.getTicketId()));
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() ->
+                new ResourceNotFoundException("User", "User Id", request.getUserId()));
+        Ticket ticket = ticketRepository.findById(request.getTicketId()).orElseThrow(() ->
+                new ResourceNotFoundException("Ticket", "Ticket Id", request.getTicketId()));
         BigDecimal totalAmount = ticket.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
         if(request.getQuantity() > ticket.getAvailableStock()){
             throw new InsufficientTicketsException("Insufficient ticket quantity available.");

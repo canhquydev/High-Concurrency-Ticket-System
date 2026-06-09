@@ -9,6 +9,8 @@ import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.model.User;
 import com.quy.highconcurrency_ticket_system.repository.UserRepository;
 import com.quy.highconcurrency_ticket_system.service.UserService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,20 +25,6 @@ public class UserServiceImp implements UserService {
         this.userRepository = userRepository;
     }
 
-    @Override
-    public UserResponse create(UserRequest request) {
-        if(userRepository.existsByEmail(request.getEmail())){
-            throw new DuplicateResourceException("Email", request.getEmail());
-        }
-        User user = User.builder()
-                .fullName(request.getFullName())
-                .email(request.getEmail())
-                .role(Role.valueOf(request.getRole().toUpperCase()))
-                .password(request.getPassword())
-                .build();
-        userRepository.save(user);
-        return new UserResponse(user);
-    }
 
     @Override
     public List<UserResponse> index() {
