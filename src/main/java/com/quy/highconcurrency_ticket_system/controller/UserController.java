@@ -5,6 +5,7 @@ import com.quy.highconcurrency_ticket_system.dto.response.APIResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.service.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/users")
+@RequestMapping(value = "/api/v1/admin/users")
+@Slf4j
 public class UserController {
     private final UserService userService;
 

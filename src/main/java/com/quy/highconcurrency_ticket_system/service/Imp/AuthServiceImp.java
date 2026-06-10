@@ -65,7 +65,7 @@ public class AuthServiceImp implements AuthService {
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
             throw new BadCredentialsException("Login failed: Invalid username or password.");
         }
-        String token = generateToken(request.getEmail());
+        String token = generateToken(user);
         return LoginResponse.builder()
                 .email(request.getEmail())
                 .token(token)
@@ -88,15 +88,15 @@ public class AuthServiceImp implements AuthService {
                 .valid(verify && expired.after(new Date())).build();
     }
 
-    private String generateToken(String email) {
+    private String generateToken(User user) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         new Date().toInstant();
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(email)
+                .subject(user.getEmail())
                 .issuer("Quys")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(30, ChronoUnit.MINUTES)))
-                .claim("Custom", "Claim")
+                .claim("scope", user.getRole())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);

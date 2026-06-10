@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/sessions")
+@RequestMapping("/api/v1/admin/sessions")
 public class EventSessionController {
     private final EventSessionService eventSessionService;
 
