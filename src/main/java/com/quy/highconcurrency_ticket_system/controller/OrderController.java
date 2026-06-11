@@ -6,14 +6,17 @@ import com.quy.highconcurrency_ticket_system.dto.response.OrderItemResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.OrderResponse;
 import com.quy.highconcurrency_ticket_system.service.OrderService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
+@Slf4j
 public class OrderController {
     private final OrderService orderService;
 
@@ -23,6 +26,9 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<APIResponse<List<OrderResponse>>> index(){
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        assert auth != null;
+        log.info("ROLE: {}", auth.getAuthorities());
         APIResponse<List<OrderResponse>> response = new APIResponse<>(HttpStatus.OK.value(), "Orders retrieved successfully"
                 , orderService.index(), null);
         return new ResponseEntity<>(response, HttpStatus.OK);

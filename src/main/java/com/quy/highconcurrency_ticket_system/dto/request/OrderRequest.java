@@ -13,8 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderRequest {
     @NotNull()
-    private Long userId;
-    @NotNull()
     private Long ticketId;
     @Min(value = 1)
     private int quantity;

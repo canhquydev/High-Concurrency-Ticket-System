@@ -10,6 +10,7 @@ import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException
 import com.quy.highconcurrency_ticket_system.model.*;
 import com.quy.highconcurrency_ticket_system.repository.*;
 import com.quy.highconcurrency_ticket_system.service.OrderService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +36,13 @@ public class OrderServiceImp implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public OrderItemResponse create(OrderRequest request){
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() ->
-                new ResourceNotFoundException("User", "User Id", request.getUserId()));
+
+        var authenticated = SecurityContextHolder.getContext().getAuthentication();
+        assert authenticated != null;
+        String email = authenticated.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Email", email));
         Ticket ticket = ticketRepository.findById(request.getTicketId()).orElseThrow(() ->
                 new ResourceNotFoundException("Ticket", "Ticket Id", request.getTicketId()));
         BigDecimal totalAmount = ticket.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
@@ -84,6 +90,9 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public OrderResponse findById(Long id) {
+
+
+
         Optional<Order> order = orderRepository.findById(id);
         if(order.isEmpty()){
             throw new ResourceNotFoundException("Order", "Id", id);

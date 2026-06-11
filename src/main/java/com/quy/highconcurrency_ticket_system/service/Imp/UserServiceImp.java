@@ -8,6 +8,8 @@ import com.quy.highconcurrency_ticket_system.dto.response.UserResponse;
 import com.quy.highconcurrency_ticket_system.model.User;
 import com.quy.highconcurrency_ticket_system.repository.UserRepository;
 import com.quy.highconcurrency_ticket_system.service.UserService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,8 +61,9 @@ public class UserServiceImp implements UserService {
         if(request.getEmail() != null){
             userUpdate.setEmail(request.getEmail());
         }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if(request.getPassword() != null){
-            userUpdate.setPassword(request.getPassword());
+            userUpdate.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         if(request.getRole() != null){
             userUpdate.setRole(Role.valueOf(request.getRole().toUpperCase()));
