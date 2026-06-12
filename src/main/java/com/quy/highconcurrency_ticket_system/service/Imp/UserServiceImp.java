@@ -11,6 +11,7 @@ import com.quy.highconcurrency_ticket_system.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,17 +56,17 @@ public class UserServiceImp implements UserService {
                 throw new DuplicateResourceException("Email", request.getEmail());
             }
         }
-        if(request.getFullName() != null){
+        if(StringUtils.hasText(request.getFullName())){
             userUpdate.setFullName(request.getFullName());
         }
-        if(request.getEmail() != null){
+        if(StringUtils.hasText(request.getEmail())){
             userUpdate.setEmail(request.getEmail());
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        if(request.getPassword() != null){
+        if(StringUtils.hasText(request.getPassword())){
             userUpdate.setPassword(passwordEncoder.encode(request.getPassword()));
         }
-        if(request.getRole() != null){
+        if(StringUtils.hasText(request.getRole())){
             userUpdate.setRole(Role.valueOf(request.getRole().toUpperCase()));
         }
 

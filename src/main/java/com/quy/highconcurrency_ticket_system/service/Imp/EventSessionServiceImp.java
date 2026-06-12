@@ -15,6 +15,7 @@ import com.quy.highconcurrency_ticket_system.repository.TicketRepository;
 import com.quy.highconcurrency_ticket_system.service.EventSessionService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,16 +82,16 @@ public class EventSessionServiceImp implements EventSessionService {
             throw new ResourceNotFoundException("Event Session", "id", id);
         }
         EventSession eventSessionUpdate = eventSession.get();
-        if(request.getLocation() != null){
+        if(StringUtils.hasText(request.getLocation())){
             eventSessionUpdate.setLocation(request.getLocation());
         }
-        if(request.getStartTime() != null){
+        if(StringUtils.hasText(String.valueOf(request.getStartTime()))){
             eventSessionUpdate.setStartTime(request.getStartTime());
         }
-        if(request.getEndTime() != null){
+        if(StringUtils.hasText(String.valueOf(request.getEndTime()))){
             eventSessionUpdate.setEndTime(request.getEndTime());
         }
-        if(request.getStatus() != null){
+        if(StringUtils.hasText(request.getStatus())){
             eventSessionUpdate.setStatus(SessionStatus.valueOf(request.getStatus()));
         }
         eventSessionRepository.save(eventSessionUpdate);

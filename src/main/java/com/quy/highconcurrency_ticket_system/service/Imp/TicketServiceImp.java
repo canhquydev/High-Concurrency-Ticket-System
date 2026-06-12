@@ -11,6 +11,7 @@ import com.quy.highconcurrency_ticket_system.repository.EventSessionRepository;
 import com.quy.highconcurrency_ticket_system.repository.TicketRepository;
 import com.quy.highconcurrency_ticket_system.service.TicketService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,16 +71,16 @@ public class TicketServiceImp implements TicketService {
             throw new ResourceNotFoundException("Ticket", "Id", id);
         }
         Ticket ticketUpdate = ticket.get();
-        if(request.getType() != null){
+        if(StringUtils.hasText(request.getType())){
             ticketUpdate.setType(TicketType.valueOf(request.getType().toUpperCase()));
         }
-        if(request.getPrice() != null){
+        if(StringUtils.hasText((CharSequence) request.getPrice())){
             ticketUpdate.setPrice(request.getPrice());
         }
-        if(request.getTotalStock() != null){
+        if(StringUtils.hasText(String.valueOf(request.getTotalStock()))){
             ticketUpdate.setTotalStock(request.getTotalStock());
         }
-        if(request.getAvailableStock() != null){
+        if(StringUtils.hasText(String.valueOf(request.getAvailableStock()))){
             ticketUpdate.setAvailableStock(request.getAvailableStock());
         }
         ticketRepository.save(ticketUpdate);

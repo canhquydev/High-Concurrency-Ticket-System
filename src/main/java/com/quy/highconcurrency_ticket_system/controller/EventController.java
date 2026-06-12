@@ -27,13 +27,19 @@ public class EventController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/ongoing")
+    public ResponseEntity<APIResponse<List<EventResponse>>> listEventOngoing(){
+        APIResponse<List<EventResponse>> response = new APIResponse<>(200, "Events ongoing retrieved successfully"
+                , eventService.eventsOngoing(), null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping("/{eventId}")
     public ResponseEntity<APIResponse<EventResponse>> findById(@PathVariable Long eventId){
         APIResponse<EventResponse> response = new APIResponse<>(HttpStatus.OK.value(), "Event retrieved successfully"
                 , eventService.findById(eventId), null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
     @PostMapping
     public ResponseEntity<APIResponse<EventResponse>> create(@Valid @RequestBody EventRequest request){

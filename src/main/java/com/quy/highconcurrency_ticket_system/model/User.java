@@ -2,6 +2,8 @@ package com.quy.highconcurrency_ticket_system.model;
 import com.quy.highconcurrency_ticket_system.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
+
 import java.util.List;
 
 @Getter
@@ -15,6 +17,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Nationalized
     private String fullName;
     @Column(unique = true)
     private String email;

@@ -25,7 +25,7 @@ public class SecurityConfig {
       "/api/v1/auth/**"
     };
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) {
         httpSecurity.authorizeHttpRequests(request ->
                 // Cho phép tất cả mọi người vào trang Đăng ký/Đăng nhập
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()

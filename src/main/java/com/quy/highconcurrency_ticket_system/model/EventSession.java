@@ -3,10 +3,9 @@ package com.quy.highconcurrency_ticket_system.model;
 import com.quy.highconcurrency_ticket_system.enums.SessionStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,6 +22,7 @@ public class EventSession {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     private Event event;
+    @Nationalized
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

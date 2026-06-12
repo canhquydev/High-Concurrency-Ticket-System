@@ -7,13 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TicketResponse {
+public class TicketResponse implements Serializable {
     private TicketType type;
     private BigDecimal price;
     private Integer totalStock;

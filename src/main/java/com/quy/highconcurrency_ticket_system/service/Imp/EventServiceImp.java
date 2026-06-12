@@ -9,7 +9,10 @@ import com.quy.highconcurrency_ticket_system.model.Event;
 import com.quy.highconcurrency_ticket_system.repository.EventRepository;
 import com.quy.highconcurrency_ticket_system.service.EventService;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
+    @CacheEvict(value = "eventsOngoing", allEntries = true)
     public EventResponse create(EventRequest request) {
         Event event = Event.builder()
                 .name(request.getName())
@@ -56,22 +60,37 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
+    @Cacheable(value = "eventsOngoing")
+    public List<EventResponse> eventsOngoing() {
+        List<Event> eventList = eventRepository.findByStatus(EventStatus.ONGOING);
+        if(eventList == null){
+            throw new ResourceNotFoundException("Event", "Status", "ONGOING");
+        }
+        List<EventResponse> eventResponses = new ArrayList<>();
+        for(Event event: eventList){
+            eventResponses.add(new EventResponse(event));
+        }
+        return eventResponses;
+    }
+
+    @Override
+    @CacheEvict(value = "eventsOngoing", allEntries = true)
     public EventResponse update(Long id, EventUpdateRq request) {
         Optional<Event> event = eventRepository.findById(id);
         if(event.isEmpty()){
             throw new ResourceNotFoundException("Event", "id", id);
         }
         Event eventUpdate = event.get();
-        if(request.getName() != null){
+        if(StringUtils.hasText(request.getName())){
             eventUpdate.setName(request.getName());
         }
-        if(request.getDescription() != null){
+        if(StringUtils.hasText(request.getDescription())){
             eventUpdate.setDescription(request.getDescription());
         }
-        if(request.getLocation() != null){
+        if(StringUtils.hasText(request.getLocation())){
             eventUpdate.setDescription(request.getLocation());
         }
-        if(request.getStatus() != null){
+        if(StringUtils.hasText(request.getStatus())){
             eventUpdate.setStatus(EventStatus.valueOf(request.getStatus().toUpperCase()));
         }
         eventRepository.save(eventUpdate);
@@ -79,13 +98,14 @@ public class EventServiceImp implements EventService {
     }
 
     @Override
+    @CacheEvict(value = "eventsOngoing", allEntries = true)
     public void delete(Long id) {
         Optional<Event> event = eventRepository.findById(id);
         if(event.isEmpty()){
             throw new ResourceNotFoundException("Event", "id", id);
         }
         Event eventDelete = event.get();
-        eventDelete.setDeleted(true);
+        eventDelete.setStatus(EventStatus.FINISHED);
         eventRepository.save(eventDelete);
     }
 }

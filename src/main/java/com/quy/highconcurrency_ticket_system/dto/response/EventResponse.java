@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +17,13 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class EventResponse {
+public class EventResponse implements Serializable {
     private Long id;
     private String name;
     private String description;
     private String location;
     private LocalDateTime createdAt;
     private EventStatus status;
-    private boolean deleted;
     private List<EventSessionResponse> eventSessions;
     public EventResponse(Event event){
         this.id = event.getId();
@@ -32,7 +32,6 @@ public class EventResponse {
         this.location = event.getLocation();
         this.createdAt = event.getCreatedAt();
         this.status = event.getStatus();
-        this.deleted = event.isDeleted();
         List<EventSessionResponse> eventSessionResponses = new ArrayList<>();
         if(event.getEventSessionsList() != null){
             for (EventSession e : event.getEventSessionsList()) {
