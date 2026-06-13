@@ -15,12 +15,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketResponse implements Serializable {
+    private Long id;
     private TicketType type;
     private BigDecimal price;
     private Integer totalStock;
     private Integer availableStock;
     private boolean deleted;
     public TicketResponse(Ticket ticket){
+        this.id = ticket.getId();
         this.type = ticket.getType();
         this.price = ticket.getPrice();
         this.totalStock = ticket.getTotalStock();

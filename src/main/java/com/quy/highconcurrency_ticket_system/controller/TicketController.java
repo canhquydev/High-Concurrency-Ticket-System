@@ -35,10 +35,10 @@ public class TicketController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/{eventSessionId}")
-    public ResponseEntity<APIResponse<TicketResponse>> create(@PathVariable Long eventSessionId, @Valid @RequestBody TicketRequest request){
+    @PostMapping()
+    public ResponseEntity<APIResponse<TicketResponse>> create(@Valid @RequestBody TicketRequest request){
         APIResponse<TicketResponse> response = new APIResponse<>(HttpStatus.CREATED.value(), "Ticket created successfully"
-                , ticketService.create(eventSessionId ,request), null);
+                , ticketService.create(request), null);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

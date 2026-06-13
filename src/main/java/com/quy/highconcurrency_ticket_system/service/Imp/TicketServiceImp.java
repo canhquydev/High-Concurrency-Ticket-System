@@ -29,8 +29,8 @@ public class TicketServiceImp implements TicketService {
     }
 
     @Override
-    public TicketResponse create(Long eventSessionId, TicketRequest request) {
-        EventSession eventSession = sessionRepository.findById(eventSessionId).orElseThrow(() -> new ResourceNotFoundException("Event Session", "Id", eventSessionId));
+    public TicketResponse create(TicketRequest request) {
+        EventSession eventSession = sessionRepository.findById(request.getEventSessionId()).orElseThrow(() -> new ResourceNotFoundException("Event Session", "Id", request.getEventSessionId()));
         if(request.getAvailableStock() > request.getTotalStock()){
             throw new IllegalArgumentException("Available stock cannot exceed total stock");
         }

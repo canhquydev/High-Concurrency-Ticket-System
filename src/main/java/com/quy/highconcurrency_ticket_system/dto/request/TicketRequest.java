@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketRequest {
+    @NotEmpty
+    private Long eventSessionId;
     @NotBlank
     @EnumValid(enumClass = TicketType.class, message = "Ticket type is not valid")
     private String type;

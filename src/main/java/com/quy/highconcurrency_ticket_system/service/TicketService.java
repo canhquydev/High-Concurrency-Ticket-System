@@ -7,7 +7,7 @@ import com.quy.highconcurrency_ticket_system.dto.response.TicketResponse;
 import java.util.List;
 
 public interface TicketService {
-    TicketResponse create(Long eventSessionId, TicketRequest request);
+    TicketResponse create(TicketRequest request);
     List<TicketResponse> index();
     TicketResponse findById(Long id);
     TicketResponse update(Long id, TicketUpdateRq request);
