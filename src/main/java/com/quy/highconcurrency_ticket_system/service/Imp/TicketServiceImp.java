@@ -10,6 +10,7 @@ import com.quy.highconcurrency_ticket_system.model.Ticket;
 import com.quy.highconcurrency_ticket_system.repository.EventSessionRepository;
 import com.quy.highconcurrency_ticket_system.repository.TicketRepository;
 import com.quy.highconcurrency_ticket_system.service.TicketService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -74,7 +75,7 @@ public class TicketServiceImp implements TicketService {
         if(StringUtils.hasText(request.getType())){
             ticketUpdate.setType(TicketType.valueOf(request.getType().toUpperCase()));
         }
-        if(StringUtils.hasText((CharSequence) request.getPrice())){
+        if(StringUtils.hasText(String.valueOf(request.getPrice()))){
             ticketUpdate.setPrice(request.getPrice());
         }
         if(StringUtils.hasText(String.valueOf(request.getTotalStock()))){

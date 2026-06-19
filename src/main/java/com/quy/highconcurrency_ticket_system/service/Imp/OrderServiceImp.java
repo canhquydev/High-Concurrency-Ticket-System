@@ -10,6 +10,11 @@ import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException
 import com.quy.highconcurrency_ticket_system.model.*;
 import com.quy.highconcurrency_ticket_system.repository.*;
 import com.quy.highconcurrency_ticket_system.service.OrderService;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +30,14 @@ public class OrderServiceImp implements OrderService {
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
     private final OrderItemRepository orderItemRepository;
+    private final StringRedisTemplate redisTemplate;
 
-    public OrderServiceImp(OrderRepository orderRepository, UserRepository userRepository, TicketRepository ticketRepository, OrderItemRepository orderItemRepository) {
+    public OrderServiceImp(OrderRepository orderRepository, UserRepository userRepository, TicketRepository ticketRepository, OrderItemRepository orderItemRepository, StringRedisTemplate redisTemplate) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
         this.orderItemRepository = orderItemRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -41,14 +48,20 @@ public class OrderServiceImp implements OrderService {
         assert authenticated != null;
         String email = authenticated.getName();
 
+        // Redis DERC
+        String redisKey = "ticket:stock:" + request.getTicketId();
+        Long availableStock = redisTemplate.opsForValue().decrement(redisKey, request.getQuantity());
+        if(availableStock < 0){
+            redisTemplate.opsForValue().increment(redisKey, request.getQuantity());
+            throw new InsufficientTicketsException("Insufficient ticket quantity available.");
+        }
+
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new ResourceNotFoundException("User", "Email", email));
         Ticket ticket = ticketRepository.findById(request.getTicketId()).orElseThrow(() ->
                 new ResourceNotFoundException("Ticket", "Ticket Id", request.getTicketId()));
         BigDecimal totalAmount = ticket.getPrice().multiply(BigDecimal.valueOf(request.getQuantity()));
-        if(request.getQuantity() > ticket.getAvailableStock()){
-            throw new InsufficientTicketsException("Insufficient ticket quantity available.");
-        }
+
         Order order = Order.builder()
                 .user(user)
                 .totalAmount(totalAmount)
@@ -57,7 +70,6 @@ public class OrderServiceImp implements OrderService {
         orderRepository.save(order);
 
         ticket.setAvailableStock(ticket.getAvailableStock() - request.getQuantity());
-        ticketRepository.save(ticket);
 
         OrderItem orderItem = OrderItem.builder()
                 .order(order)
