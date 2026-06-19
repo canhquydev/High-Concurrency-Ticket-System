@@ -10,11 +10,7 @@ import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException
 import com.quy.highconcurrency_ticket_system.model.*;
 import com.quy.highconcurrency_ticket_system.repository.*;
 import com.quy.highconcurrency_ticket_system.service.OrderService;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
