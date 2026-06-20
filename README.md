@@ -51,4 +51,3 @@ High-Concurrency Ticket System là một hệ thống đặt vé được thiế
     ```
     http://localhost:8080/swagger-ui/index.html
     ```
-*(Lưu ý: Thay đổi port 8080 nếu bạn có thiết lập port khác trong file cấu hình).*
