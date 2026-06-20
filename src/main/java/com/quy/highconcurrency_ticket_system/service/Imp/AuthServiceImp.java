@@ -88,7 +88,7 @@ public class AuthServiceImp implements AuthService {
                 .valid(verify && expired.after(new Date())).build();
     }
 
-    private String generateToken(User user) {
+    public String generateToken(User user) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         new Date().toInstant();
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()

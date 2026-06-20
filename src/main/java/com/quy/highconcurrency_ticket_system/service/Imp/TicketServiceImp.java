@@ -10,6 +10,8 @@ import com.quy.highconcurrency_ticket_system.model.Ticket;
 import com.quy.highconcurrency_ticket_system.repository.EventSessionRepository;
 import com.quy.highconcurrency_ticket_system.repository.TicketRepository;
 import com.quy.highconcurrency_ticket_system.service.TicketService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,10 +24,12 @@ public class TicketServiceImp implements TicketService {
 
     private final TicketRepository ticketRepository;
     private final EventSessionRepository sessionRepository;
+    private final StringRedisTemplate redisTemplate;
 
-    public TicketServiceImp(TicketRepository ticketRepository, EventSessionRepository sessionRepository) {
+    public TicketServiceImp(TicketRepository ticketRepository, EventSessionRepository sessionRepository, StringRedisTemplate redisTemplate) {
         this.ticketRepository = ticketRepository;
         this.sessionRepository = sessionRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -42,6 +46,8 @@ public class TicketServiceImp implements TicketService {
                 .availableStock(request.getAvailableStock())
                 .build();
         ticketRepository.save(ticket);
+        String redisKey = "ticket:stock:" + ticket.getId();
+        redisTemplate.opsForValue().set(redisKey, String.valueOf(ticket.getAvailableStock()));
         return new TicketResponse(ticket);
     }
 
@@ -84,6 +90,8 @@ public class TicketServiceImp implements TicketService {
             ticketUpdate.setAvailableStock(request.getAvailableStock());
         }
         ticketRepository.save(ticketUpdate);
+        String redisKey = "ticket:stock:" + ticketUpdate.getId();
+        redisTemplate.opsForValue().set(redisKey, String.valueOf(ticketUpdate.getAvailableStock()));
         return new TicketResponse(ticketUpdate);
     }
 
@@ -96,5 +104,7 @@ public class TicketServiceImp implements TicketService {
         Ticket ticketDelete = ticket.get();
         ticketDelete.setDeleted(true);
         ticketRepository.save(ticketDelete);
+        String redisKey = "ticket:stock:" + id;
+        redisTemplate.delete(redisKey);
     }
 }

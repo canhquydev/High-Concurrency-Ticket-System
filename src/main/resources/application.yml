@@ -4,6 +4,8 @@ spring:
   profiles:
     active:
   datasource:
+    hikari:
+      maximum-pool-size: 50
     url: jdbc:sqlserver://localhost:1433;databaseName=ticketdb;trustServerCertificate=true
     username: sa
     password: 123456
@@ -15,5 +17,14 @@ spring:
     redis:
       host: localhost
       port: 6379
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 jwt:
   secretKey: YciddydL3yrPZPBsf+0gqx5EL80dKL9MyMImRR7Jp3A3Is70nvEbQtgCm2nytMTItZexrgJZPysYfeJ7SdLuqw==
+server:
+  tomcat:
+    threads:
+      max: 200

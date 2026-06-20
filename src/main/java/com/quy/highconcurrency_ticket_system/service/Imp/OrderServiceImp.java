@@ -1,5 +1,7 @@
 package com.quy.highconcurrency_ticket_system.service.Imp;
 
+import com.quy.highconcurrency_ticket_system.configuration.RabbitMQConfig;
+import com.quy.highconcurrency_ticket_system.dto.request.OrderMessage;
 import com.quy.highconcurrency_ticket_system.dto.request.OrderRequest;
 import com.quy.highconcurrency_ticket_system.dto.response.OrderItemResponse;
 import com.quy.highconcurrency_ticket_system.dto.response.OrderResponse;
@@ -10,6 +12,7 @@ import com.quy.highconcurrency_ticket_system.exception.ResourceNotFoundException
 import com.quy.highconcurrency_ticket_system.model.*;
 import com.quy.highconcurrency_ticket_system.repository.*;
 import com.quy.highconcurrency_ticket_system.service.OrderService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,25 +23,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
+
 @Service
 public class OrderServiceImp implements OrderService {
-    private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
+    private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final StringRedisTemplate redisTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
-    public OrderServiceImp(OrderRepository orderRepository, UserRepository userRepository, TicketRepository ticketRepository, OrderItemRepository orderItemRepository, StringRedisTemplate redisTemplate) {
-        this.orderRepository = orderRepository;
+
+    public OrderServiceImp(UserRepository userRepository, TicketRepository ticketRepository, OrderRepository orderRepository, OrderItemRepository orderItemRepository, StringRedisTemplate redisTemplate, RabbitTemplate rabbitTemplate) {
         this.userRepository = userRepository;
         this.ticketRepository = ticketRepository;
+        this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.redisTemplate = redisTemplate;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public OrderItemResponse create(OrderRequest request){
+    public String create(OrderRequest request){
 
         var authenticated = SecurityContextHolder.getContext().getAuthentication();
         assert authenticated != null;
@@ -65,8 +73,6 @@ public class OrderServiceImp implements OrderService {
                 .build();
         orderRepository.save(order);
 
-        ticket.setAvailableStock(ticket.getAvailableStock() - request.getQuantity());
-
         OrderItem orderItem = OrderItem.builder()
                 .order(order)
                 .ticket(ticket)
@@ -74,16 +80,11 @@ public class OrderServiceImp implements OrderService {
                 .price(ticket.getPrice())
                 .build();
         orderItemRepository.save(orderItem);
-        return OrderItemResponse.builder()
-                .order(new OrderResponse(order))
-                .user(new UserResponse(user))
-                .quantity(request.getQuantity())
-                .priceAtPurchase(ticket.getPrice())
-                .ticketType(ticket.getType().toString())
-                .startTime(ticket.getEventSession().getStartTime())
-                .endTime(ticket.getEventSession().getEndTime())
-                .eventName(ticket.getEventSession().getEvent().getName())
-                .build();
+
+        OrderMessage message = new OrderMessage(order.getId(), request.getTicketId(), request.getQuantity());
+        rabbitTemplate.convertAndSend(RabbitMQConfig.QUEUE, message);
+
+        return "Your order is being processed.";
     }
 
     @Override

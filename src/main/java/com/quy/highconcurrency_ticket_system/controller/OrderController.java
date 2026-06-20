@@ -49,8 +49,8 @@ public class OrderController {
 
 
     @PostMapping
-    public ResponseEntity<APIResponse<OrderItemResponse>> create(@Valid @RequestBody OrderRequest request){
-        APIResponse<OrderItemResponse> response = new APIResponse<>(HttpStatus.CREATED.value(), "Order created successfully"
+    public ResponseEntity<APIResponse<String>> create(@Valid @RequestBody OrderRequest request){
+        APIResponse<String> response = new APIResponse<>(HttpStatus.CREATED.value(), "Order created successfully"
                 , orderService.create(request), null);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

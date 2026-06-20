@@ -7,7 +7,7 @@ import com.quy.highconcurrency_ticket_system.dto.response.OrderResponse;
 import java.util.List;
 
 public interface OrderService {
-    OrderItemResponse create(OrderRequest request);
+    String create(OrderRequest request);
     List<OrderResponse> index();
     OrderResponse findById(Long id);
     OrderItemResponse orderDetails(Long orderId);
