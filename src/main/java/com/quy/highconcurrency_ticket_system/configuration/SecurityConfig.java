@@ -1,5 +1,9 @@
 package com.quy.highconcurrency_ticket_system.configuration;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +20,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
+@OpenAPIDefinition(
+        security = @SecurityRequirement(name = "bearerAuth")
+)
 public class SecurityConfig {
 
     @Value("${jwt.secretKey}")
@@ -24,11 +37,23 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINT = {
       "/api/v1/auth/**"
     };
+
+    private final String[] SWAGGER_WHITELIST = {
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**",
+            "/swagger-ui.html"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) {
         httpSecurity.authorizeHttpRequests(request ->
                 // Cho phép tất cả mọi người vào trang Đăng ký/Đăng nhập
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()
+
+                // Cho phép Swagger UI và OpenAPI Docs truy cập không cần auth
+                .requestMatchers(SWAGGER_WHITELIST).permitAll()
 
                 // Cho phép tất cả mọi người xem danh sách Sự kiện
                 .requestMatchers(HttpMethod.GET, "/api/v1/events/**").permitAll()

@@ -10,7 +10,6 @@ import com.quy.highconcurrency_ticket_system.model.Ticket;
 import com.quy.highconcurrency_ticket_system.repository.EventSessionRepository;
 import com.quy.highconcurrency_ticket_system.repository.TicketRepository;
 import com.quy.highconcurrency_ticket_system.service.TicketService;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

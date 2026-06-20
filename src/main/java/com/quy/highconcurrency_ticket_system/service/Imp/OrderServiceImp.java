@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
-
 @Service
 public class OrderServiceImp implements OrderService {
     private final UserRepository userRepository;

@@ -1,6 +1,5 @@
 package com.quy.highconcurrency_ticket_system.dto.request;
 
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

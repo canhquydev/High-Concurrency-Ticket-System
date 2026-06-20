@@ -25,7 +25,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -122,9 +121,7 @@ public class OrderServiceImpTest {
         when(valueOperations.decrement(anyString(), anyLong())).thenReturn(-1L);
 
         // Hành động & Kiểm tra (Phải văng ra lỗi InsufficientTicketsException)
-        assertThrows(InsufficientTicketsException.class, () -> {
-            orderService.create(request);
-        });
+        assertThrows(InsufficientTicketsException.class, () -> orderService.create(request));
 
         // Kiểm tra xem hệ thống có biết tự hoàn lại số lượng vé vào Redis (increment) không
         verify(valueOperations, times(1)).increment(anyString(), eq(2L));
@@ -143,9 +140,7 @@ public class OrderServiceImpTest {
         // Giả lập: Không tìm thấy ông khách nào mang mail này
         when(userRepository.findByEmail("test@gmail.com")).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            orderService.create(request);
-        });
+        assertThrows(ResourceNotFoundException.class, () -> orderService.create(request));
     }
 
 }
